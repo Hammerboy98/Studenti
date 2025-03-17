@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Studente>
+
+<h2>Lista Studenti</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Data di Nascita</th>
+            <th>Email</th>
+            <th>Azioni</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var studente in Model)
+        {
+            <tr>
+                <td>@studente.Nome</td>
+                <td>@studente.Cognome</td>
+                <td>@studente.DataDiNascita.ToShortDateString()</td>
+                <td>@studente.Email</td>
+                <td>
+                    <button class="btn btn-info" onclick="loadDetails(@studente.Id)">Dettagli</button>
+                    <button class="btn btn-warning" onclick="loadEdit(@studente.Id)">Modifica</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div id="dettagliStudente"></div>
+<div id="modificaStudente"></div>
+
+<script>
+    function loadDetails(id) {
+        $.get("/Studenti/Dettagli/" + id, function (data) {
+            $("#dettagliStudente").html(data);
+        });
+    }
+
+    function loadEdit(id) {
+        $.get("/Studenti/Modifica/" + id, function (data) {
+            $("#modificaStudente").html(data);
+        });
+    }
+
+    function submitEditForm() {
+        var form = $("#editForm");
+        $.post(form.attr("action"), form.serialize(), function (response) {
+            if (response.success) {
+                location.reload();
+            } else {
+                $("#modificaStudente").html(response);
+            }
+        });
+    }
+</script>

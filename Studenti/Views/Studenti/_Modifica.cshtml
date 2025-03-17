@@ -1,0 +1,27 @@
+﻿@model Studente
+
+<div class="card">
+    <div class="card-header">Modifica Studente</div>
+    <div class="card-body">
+        <form id="editForm" asp-action="Modifica" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Nome"></label>
+                <input asp-for="Nome" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Cognome"></label>
+                <input asp-for="Cognome" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="DataDiNascita"></label>
+                <input asp-for="DataDiNascita" class="form-control" type="date" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitEditForm()">Salva</button>
+        </form>
+    </div>
+</div>
