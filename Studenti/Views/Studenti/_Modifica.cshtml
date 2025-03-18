@@ -25,3 +25,16 @@
         </form>
     </div>
 </div>
+
+<script>
+    function submitEditForm() {
+        var form = $("#editForm");
+        $.post(form.attr("action"), form.serialize(), function (response) {
+            if (response.success) {
+                location.reload(); // Ricarica la pagina per mostrare l'elenco aggiornato
+            } else {
+                $("#editForm").html(response); // Mostra eventuali errori di validazione
+            }
+        });
+    }
+</script>

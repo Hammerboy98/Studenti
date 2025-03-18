@@ -1,0 +1,43 @@
+﻿<div class="modal" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Conferma Eliminazione</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Sei sicuro di voler eliminare lo studente <strong id="studentName"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                <button type="button" class="btn btn-danger" onclick="submitDelete()">Elimina</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var studentIdToDelete;
+
+    function showDeleteModal(id) {
+        studentIdToDelete = id;
+
+        $.get("/Studenti/Dettagli/" + id, function (data) {
+            $("#studentName").text(data.Nome + " " + data.Cognome);
+            $('#deleteModal').modal('show');
+        });
+    }
+
+    function submitDelete() {
+        $.post("/Studenti/Elimina/" + studentIdToDelete, function (response) {
+            if (response.success) {
+                $('#deleteModal').modal('hide');
+                location.reload(); // Ricarica la pagina
+            } else {
+                alert("Errore durante l'eliminazione dello studente");
+            }
+        });
+    }
+</script>

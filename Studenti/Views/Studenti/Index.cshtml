@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<Studente>
 
 <h2>Lista Studenti</h2>
+
+<!-- Pulsante per aprire il modale di creazione -->
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Aggiungi Studente</button>
+
 <table class="table">
     <thead>
         <tr>
@@ -22,15 +26,53 @@
                 <td>
                     <button class="btn btn-info" onclick="loadDetails(@studente.Id)">Dettagli</button>
                     <button class="btn btn-warning" onclick="loadEdit(@studente.Id)">Modifica</button>
+                    <button class="btn btn-danger" onclick="showDeleteModal(@studente.Id)">Elimina</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
 <div id="dettagliStudente"></div>
 <div id="modificaStudente"></div>
 
+<!-- Modale per Creare Studente -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Crea Studente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_Crea", new Studente()) <!-- Carica la partial view con il form -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale per Eliminare Studente -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Conferma Eliminazione</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Sei sicuro di voler eliminare lo studente <strong id="studenteNome"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="btn btn-danger" onclick="submitDelete()">Elimina</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    let studenteIdDaEliminare = null;
+
     function loadDetails(id) {
         $.get("/Studenti/Dettagli/" + id, function (data) {
             $("#dettagliStudente").html(data);
@@ -52,5 +94,26 @@
                 $("#modificaStudente").html(response);
             }
         });
+    }
+
+    function showDeleteModal(id) {
+        $.get("/Studenti/Dettagli/" + id, function (data) {
+            $("#studenteNome").text(data.nome + " " + data.cognome);
+            studenteIdDaEliminare = id;
+            $("#deleteModal").modal("show");
+        });
+    }
+
+    function submitDelete() {
+        if (studenteIdDaEliminare) {
+            $.post("/Studenti/Elimina/" + studenteIdDaEliminare, function (response) {
+                if (response.success) {
+                    $("#deleteModal").modal("hide");
+                    location.reload();
+                } else {
+                    alert("Si è verificato un errore durante l'eliminazione.");
+                }
+            });
+        }
     }
 </script>
