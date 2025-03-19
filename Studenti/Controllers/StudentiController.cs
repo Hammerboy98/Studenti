@@ -4,9 +4,11 @@ using Microsoft.Extensions.Logging;
 using Studenti.Data;
 using Studenti.Models;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization; // Aggiungi questo namespace
 
 namespace Studenti.Controllers
 {
+    [Authorize] // Questa linea protegge tutto il controller
     public class StudentiController : Controller
     {
         private readonly ApplicationDbContext _context;
